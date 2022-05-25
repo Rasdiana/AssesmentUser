@@ -14,6 +14,7 @@ class UserViewController: UIViewController {
     @IBOutlet weak var userTableView : UITableView!
     @IBOutlet weak var userCellView : UITableViewCell!
     @IBOutlet weak var mapView : MKMapView!
+    private var annotations : [MKAnnotation] = []
     
     private var location : [DataMap] = [DataMap(lat: 3.5930011499068213, long: 98.62739037704401, placeName: "Manhattan"),
                                         DataMap(lat: 3.5920559731770907, long: 98.62809463220401, placeName: "SAKA Hotel"),
@@ -68,7 +69,6 @@ class UserViewController: UIViewController {
             listBtn.setImage(UIImage(named:"btnList")?.withRenderingMode(.alwaysOriginal), for: .normal)
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: listBtn)
             
-    //        let initialLocation = CLLocation(latitude: 3.5930011499068213, longitude: 98.62739037704401)
             mapView.delegate = self
             
             var i = 0
@@ -85,11 +85,6 @@ class UserViewController: UIViewController {
                 setPinUsingMKAnnotation(location: loc, placeName: user.location!.placeName, name: user.first_name + " " + user.last_name, email: user.email, ava: user.avatar)
             }
             
-            
-    //        mapView.centerToLocation(initialLocation)
-            
-    //        var loc = CLLocationCoordinate2D(latitude: 3.5930011499068213, longitude: 98.62739037704401)
-    //        setPinUsingMKAnnotation(location: loc)
             userTableView.isHidden = true
             mapView.isHidden = false
         } else {
@@ -106,8 +101,10 @@ class UserViewController: UIViewController {
         pinBtn.setImage(UIImage(named:"ic_show_map")?.withRenderingMode(.alwaysOriginal), for: .normal)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: pinBtn)
         
+        mapView.removeAnnotations(annotations)
         userTableView.isHidden = false
         mapView.isHidden = true
+        
     }
     
     @objc func callPullToRefresh(){
@@ -231,7 +228,7 @@ extension UserViewController : UITableViewDelegate, UITableViewDataSource {
 
 extension UserViewController: MKMapViewDelegate {
    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-   
+    self.annotations.append(annotation)
       let Identifier = "Pin"
       let annotationView  = mapView.dequeueReusableAnnotationView(withIdentifier: Identifier) ?? MKAnnotationView(annotation: annotation, reuseIdentifier: Identifier)
    
